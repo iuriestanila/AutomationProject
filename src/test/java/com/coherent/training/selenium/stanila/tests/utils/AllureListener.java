@@ -1,14 +1,23 @@
 package com.coherent.training.selenium.stanila.tests.utils;
 
 import com.coherent.training.selenium.stanila.base.utils.DriverFactory;
+import com.coherent.training.selenium.stanila.base.utils.ReadFile;
 import com.coherent.training.selenium.stanila.tests.BaseTest;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Attachment;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class AllureListener extends BaseTest implements ITestListener {
 
@@ -26,32 +35,53 @@ public class AllureListener extends BaseTest implements ITestListener {
         return message;
     }
 
-
     @Override
     public void onStart(ITestContext context) {
-        System.out.println("on start: "+context.getName());
         context.setAttribute("WebDriver", DriverFactory.getDriver());
     }
 
     @Override
     public void onFinish(ITestContext context) {
-        System.out.println("on finish: "+context.getName());
     }
 
     @Override
     public void onTestStart(ITestResult result) {
-        System.out.println("On test start: "+result.getName()+" start");
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        System.out.println("On test success: "+ getTestMethodName(result)+" succeeded");
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
         saveFailureScreenshot(DriverFactory.getDriver());
         saveTextLog(result.getMethod().getConstructorOrMethod().getName());
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        if (DriverFactory.getDriver().getClass() == ChromeDriver.class) {
+            Allure.step("Type of the browser", () -> {
+                Allure.attachment("Browser", "chrome");
+                Allure.attachment("BrowserVersion", ReadFile.read("chromeVersion"));
+                Allure.attachment("PlatformVersion", ReadFile.read("platformVersion"));
+                Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+            });
+        } else if (DriverFactory.getDriver().getClass() == FirefoxDriver.class) {
+            Allure.step("Type of the browser", () -> {
+                Allure.attachment("Browser", "firefox");
+                Allure.attachment("BrowserVersion", ReadFile.read("firefoxVersion"));
+                Allure.attachment("PlatformVersion", ReadFile.read("platformVersion"));
+                Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+            });
+        } else if (DriverFactory.getDriver() instanceof RemoteWebDriver) {
+            Capabilities cap = ((RemoteWebDriver) DriverFactory.getDriver()).getCapabilities();
+            Allure.step("Type of the browser", () -> {
+                Allure.attachment("Browser", cap.getBrowserName());
+                Allure.attachment("BrowserVersion", cap.getBrowserVersion());
+                Allure.attachment("PlatformName", String.valueOf(cap.getPlatformName()));
+                Allure.attachment("PlatformVersion", cap.getCapability("platformVersion").toString());
+                Allure.attachment("Date", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+            });
+        }
     }
 
     @Override
@@ -63,7 +93,6 @@ public class AllureListener extends BaseTest implements ITestListener {
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
         System.out.println("Test failed but within success percentage: "+getTestMethodName(result));
     }
-
 
     @Override
     public void onTestFailedWithTimeout(ITestResult result) {

@@ -1,12 +1,18 @@
 package com.coherent.training.selenium.stanila.base.pojo;
 
+import java.math.BigDecimal;
+
 public class Phone {
     private String name;
-    private double price;
+    private BigDecimal price;
 
-    public Phone(String brand, double price) {
-        this.name = brand;
+    public Phone(String name, BigDecimal price) {
+        this.name = name;
         this.price = price;
+    }
+
+    public Phone(){
+
     }
 
     public String getName() {
@@ -17,12 +23,14 @@ public class Phone {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrice(String priceString) {
+        String priceConvert = priceString.replaceAll("[^\\d,]", "").replace(",",".");
+        price = new BigDecimal(priceConvert);
+
     }
 
     @Override

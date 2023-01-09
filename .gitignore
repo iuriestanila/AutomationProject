@@ -15,5 +15,5 @@ target/
 *.iml
 
 src/main/resources/chromedriver.exe
-src/main/resources/classified.properties
+src/main/resources/geckodriver.exe
 allure-results
