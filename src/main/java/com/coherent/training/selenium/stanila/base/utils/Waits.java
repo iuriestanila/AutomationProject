@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class Waits {
-    public static boolean isPresent(WebDriver driver, List<WebElement> elements) {
+    public static boolean isPresentElements(WebDriver driver, List<WebElement> elements) {
         Wait<WebDriver> wait = getFluentWait(driver);
 
         return wait.until(webDriver -> {
@@ -22,6 +22,12 @@ public class Waits {
             return present;
         });
     }
+
+    public static boolean isPresentBy(WebDriver driver, By by) {
+        Wait<WebDriver> wait = getFluentWait(driver);
+        return wait.until(webDriver -> webDriver.findElement(by).isDisplayed());
+    }
+
 
     public static Wait<WebDriver> getFluentWait(WebDriver driver) {
         return new FluentWait<>(driver)

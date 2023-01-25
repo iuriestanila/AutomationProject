@@ -15,6 +15,7 @@ public class ProductsPOM extends BasePOM{
     private WebElement checkBoxPhoneType;
     @FindBy(xpath = "//span[normalize-space()='2020']")
     private WebElement checkBoxYear;
+
     @FindBy(xpath = "//span[@data-bind='html: product.extended_name || product.full_name']")
     private List<WebElement> namePhones;
 
@@ -25,6 +26,7 @@ public class ProductsPOM extends BasePOM{
         super(driver);
     }
 
+    @SneakyThrows
     @Step("Choose a phone type")
     public ProductsPOM choosePhoneType(){
         JsExecutor.jsClick(checkBoxPhoneType,driver);
@@ -38,7 +40,7 @@ public class ProductsPOM extends BasePOM{
 
     @SneakyThrows
     public List<WebElement> getNamePhones() {
-        Waits.isPresent(driver, namePhones);
+        Waits.isPresentElements(driver, namePhones);
         return namePhones;
     }
 

@@ -32,12 +32,13 @@
                 <version>2.20</version>
                 <configuration>
                     <testFailureIgnore>true</testFailureIgnore>
+                    <useSystemClassLoader>true</useSystemClassLoader>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                     <suiteXmlFiles>
-                        <suiteXmlFile>ordinaryRun.xml</suiteXmlFile>
-                        <suiteXmlFile>sauceLabsRun.xml</suiteXmlFile>
+<!--                        <suiteXmlFile>smoke-suite.xml</suiteXmlFile>-->
+                        <suiteXmlFile>${basedir}/src/test/resources/smoke-suite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
                 <dependencies>
@@ -58,7 +59,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.0</version>
         </dependency>
 
         <dependency>
@@ -91,6 +92,19 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+
 
     </dependencies>
 

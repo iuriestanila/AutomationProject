@@ -3,7 +3,7 @@ package com.coherent.training.selenium.stanila.tests;
 import com.coherent.training.selenium.stanila.base.pages.MainPOM;
 import com.coherent.training.selenium.stanila.base.pages.ProductsPOM;
 import com.coherent.training.selenium.stanila.base.pojo.Phone;
-import com.coherent.training.selenium.stanila.base.utils.DriverFactory;
+import com.coherent.training.selenium.stanila.base.utils.drivers.DriverFactory;
 import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,6 +19,7 @@ public class PriceTest extends BaseTest{
     private MainPOM mainPOM;
     private ProductsPOM productsPOM;
     private List<Phone> filledList;
+
     @BeforeMethod
     public void setUp() {
         driver = DriverFactory.getDriver();
@@ -30,7 +31,7 @@ public class PriceTest extends BaseTest{
     @Description("Compare the prices of 2 phones")
     public void testPrices() {
 
-         mainPOM.clickCatalog()
+        mainPOM.clickCatalog()
                 .clickElectronics()
                 .clickPhonesAndAccessories()
                 .clickSmartphones()
@@ -39,7 +40,11 @@ public class PriceTest extends BaseTest{
 
         addPhones(productsPOM.getNamePhones(), productsPOM.getPricePhones());
 
-        System.out.println("Comparing prices of phones: " +filledList.get(0).getName()+ " and " + filledList.get(1).getName());
+        log.info("Comparing prices of phones: " + filledList.get(0).getName() + " and " + filledList.get(1).getName());
+        log.info("Price of " + filledList.get(0).getName() + ": " + filledList.get(0).getPrice());
+        log.info("Price of " + filledList.get(1).getName() + ": " + filledList.get(1).getPrice());
+
+        System.out.println("Comparing prices of phones: " + filledList.get(0).getName() + " and " + filledList.get(1).getName());
         System.out.println("Price of " + filledList.get(0).getName() + ": " + filledList.get(0).getPrice());
         System.out.println("Price of " + filledList.get(1).getName() + ": " + filledList.get(1).getPrice());
 
