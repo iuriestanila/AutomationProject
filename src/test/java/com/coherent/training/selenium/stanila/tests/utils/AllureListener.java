@@ -67,14 +67,14 @@ public class AllureListener extends BaseTest implements ITestListener {
 
         if (DriverFactory.getDriver().getClass() == ChromeDriver.class) {
             Allure.step("Type of the browser", () -> {
-                Allure.attachment("Browser", ReadFile.read("browser"));
+                Allure.attachment("Browser", System.getProperty("browser"));
                 Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
                 Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
                 Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
             });
         } else if (DriverFactory.getDriver().getClass() == FirefoxDriver.class) {
             Allure.step("Type of the browser", () -> {
-                Allure.attachment("Browser", "firefox");
+                Allure.attachment("Browser", System.getProperty("browser"));
                 Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
                 Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
                 Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
