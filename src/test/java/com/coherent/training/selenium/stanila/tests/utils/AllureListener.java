@@ -67,16 +67,16 @@ public class AllureListener extends BaseTest implements ITestListener {
 
         if (DriverFactory.getDriver().getClass() == ChromeDriver.class) {
             Allure.step("Type of the browser", () -> {
-                Allure.attachment("Browser", "chrome");
-                Allure.attachment("BrowserVersion", ReadFile.read("chromeVersion"));
-                Allure.attachment("PlatformVersion", ReadFile.read("platformVersion"));
+                Allure.attachment("Browser", ReadFile.read("browser"));
+                Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
+                Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
                 Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
             });
         } else if (DriverFactory.getDriver().getClass() == FirefoxDriver.class) {
             Allure.step("Type of the browser", () -> {
                 Allure.attachment("Browser", "firefox");
-                Allure.attachment("BrowserVersion", ReadFile.read("firefoxVersion"));
-                Allure.attachment("PlatformVersion", ReadFile.read("firefoxPlatformVersion"));
+                Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
+                Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
                 Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
             });
         } else if (DriverFactory.getDriver() instanceof RemoteWebDriver) {
@@ -85,7 +85,7 @@ public class AllureListener extends BaseTest implements ITestListener {
                 Allure.attachment("Browser", cap.getBrowserName());
                 Allure.attachment("BrowserVersion", cap.getBrowserVersion());
                 Allure.attachment("PlatformName", String.valueOf(cap.getPlatformName()));
-                Allure.attachment("PlatformVersion", cap.getCapability("platformVersionRemote").toString());
+                Allure.attachment("PlatformVersion", cap.getCapability("platform.version").toString());
                 Allure.attachment("Date", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
             });
         }
