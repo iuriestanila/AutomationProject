@@ -15,7 +15,6 @@ public class ProductsPOM extends BasePOM{
     private WebElement checkBoxPhoneType;
     @FindBy(xpath = "//span[normalize-space()='2020']")
     private WebElement checkBoxYear;
-
     @FindBy(xpath = "//span[@data-bind='html: product.extended_name || product.full_name']")
     private List<WebElement> namePhones;
 

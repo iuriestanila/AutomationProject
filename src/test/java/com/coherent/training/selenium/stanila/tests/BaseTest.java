@@ -10,32 +10,14 @@ import org.testng.annotations.BeforeMethod;
 import java.time.Duration;
 
 public class BaseTest {
-  public static Logger log = LogManager.getLogger();
     @BeforeMethod
     public void initialize() {
+        String browser = ReadFile.read("browser");
+        String driverType = ReadFile.read("driver.type");
+        String remoteURL = ReadFile.read("grid.url");
+        String platform = ReadFile.read("platform.version");
 
-        String browser = System.getProperty("browser","chrome");
-        String version;
-        String platform;
-
-        String remoteURL = System.getProperty("remote","");
-        boolean runLocal = true;
-
-        if(browser.equalsIgnoreCase("chrome")){
-            version = ReadFile.read("chromeVersion");
-            platform = ReadFile.read("platformVersion");
-        } else if (browser.equalsIgnoreCase("firefox")){
-            version = ReadFile.read("firefoxVersion");
-            platform = ReadFile.read("platformVersion");
-        } else {
-            throw new RuntimeException("Wrong browser name");
-        }
-
-        if(!remoteURL.isEmpty()){
-            runLocal = false;
-        }
-
-        DriverFactory.setDriver(browser, version, platform, remoteURL, runLocal);
+        DriverFactory.setDriver(browser, platform, remoteURL, driverType);
 
         DriverFactory.getDriver().get(ReadFile.read("urlSiteTest"));
         DriverFactory.getDriver().manage().window().maximize();

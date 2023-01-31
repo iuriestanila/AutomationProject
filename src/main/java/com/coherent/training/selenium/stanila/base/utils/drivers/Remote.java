@@ -11,11 +11,9 @@ import java.net.URL;
 
 public class Remote {
     @SneakyThrows
-    public static WebDriver createDriver(String browser, String version,
-                                         String platform, String remoteURL) {
+    public static WebDriver createDriver(String browser, String platform, String remoteURL) {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability("browserName", browser);
-        caps.setCapability("browserVersion", version);
         caps.setCapability("platformName", platform);
         caps.setCapability("remote",remoteURL);
 

@@ -6,15 +6,14 @@ import org.openqa.selenium.WebDriver;
 public class DriverFactory {
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
     @SneakyThrows
-    public static void setDriver(String browser, String version,
-                                 String platform, String remoteURL, boolean runLocal) {
+    public static void setDriver(String browser, String platform, String remoteURL, String driverType) {
 
-        if(!runLocal){
-            driver.set(Remote.createDriver(browser,version,platform, remoteURL));
+        if (driverType.equalsIgnoreCase("remote")) {
+            driver.set(Remote.createDriver(browser, platform, remoteURL));
         } else {
             driver.set(Local.createDriver(browser));
         }
-        }
+    }
 
     public static WebDriver getDriver() {
         return driver.get();

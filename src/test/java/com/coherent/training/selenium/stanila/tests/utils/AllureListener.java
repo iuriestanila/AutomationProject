@@ -9,8 +9,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -19,7 +17,12 @@ import org.testng.ITestResult;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class AllureListener extends BaseTest implements ITestListener {
+public class AllureListener implements ITestListener {
+    String browserName;
+    String browserVersion;
+    String platformName;
+    String platformVersion;
+    Capabilities cap;
 
     private static String getTestMethodName(ITestResult iTestResult){
         return iTestResult.getMethod().getConstructorOrMethod().getName();
@@ -35,11 +38,6 @@ public class AllureListener extends BaseTest implements ITestListener {
         return message;
     }
 
-    @Override
-    public void onStart(ITestContext context) {
-        System.out.println("onStart method " + context.getName());
-        context.setAttribute("WebDriver", DriverFactory.getDriver());
-    }
 
     @Override
     public void onFinish(ITestContext context) {
@@ -57,6 +55,12 @@ public class AllureListener extends BaseTest implements ITestListener {
     }
 
     @Override
+    public void onStart(ITestContext context) {
+        System.out.println("onStart method " + context.getName());
+        context.setAttribute("WebDriver", DriverFactory.getDriver());
+        }
+
+    @Override
     public void onTestFailure(ITestResult result) {
         System.out.println("onTestFailure method " + getTestMethodName(result) + " failed");
 
@@ -65,32 +69,34 @@ public class AllureListener extends BaseTest implements ITestListener {
 
         LocalDateTime dateTime = LocalDateTime.now();
 
-        if (DriverFactory.getDriver().getClass() == ChromeDriver.class) {
+        cap = ((RemoteWebDriver) DriverFactory.getDriver()).getCapabilities();
+        browserName = cap.getBrowserName();
+        browserVersion = cap.getBrowserVersion();
+        platformName = String.valueOf(cap.getPlatformName());
+        platformVersion = cap.getCapability("platform.version").toString();
+
+        if (System.getProperty("driver.type").equalsIgnoreCase("remote")) {
             Allure.step("Type of the browser", () -> {
-                Allure.attachment("Browser", System.getProperty("browser"));
-                Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
-                Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
-                Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
-            });
-        } else if (DriverFactory.getDriver().getClass() == FirefoxDriver.class) {
-            Allure.step("Type of the browser", () -> {
-                Allure.attachment("Browser", System.getProperty("browser"));
-                Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
-                Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
-                Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
-            });
-        } else if (DriverFactory.getDriver() instanceof RemoteWebDriver) {
-            Capabilities cap = ((RemoteWebDriver) DriverFactory.getDriver()).getCapabilities();
-            Allure.step("Type of the browser", () -> {
-                Allure.attachment("Browser", cap.getBrowserName());
-                Allure.attachment("BrowserVersion", cap.getBrowserVersion());
-                Allure.attachment("PlatformName", String.valueOf(cap.getPlatformName()));
-                Allure.attachment("PlatformVersion", cap.getCapability("platform.version").toString());
+                Allure.attachment("Browser", browserName);
+                Allure.attachment("BrowserVersion", browserVersion);
+                Allure.attachment("PlatformName", platformName);
+                Allure.attachment("PlatformVersion", platformVersion);
                 Allure.attachment("Date", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
             });
+        } else {
+            localAddAttachment();
         }
     }
 
+    public void localAddAttachment(){
+        LocalDateTime dateTime = LocalDateTime.now();
+        Allure.step("Type of the browser", () -> {
+            Allure.attachment("Browser", System.getProperty("browser"));
+            Allure.attachment("BrowserVersion", System.getProperty("browser.version"));
+            Allure.attachment("PlatformVersion", ReadFile.read("platform.version"));
+            Allure.attachment("Date and time", dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+        });
+    }
 
     @Override
     public void onTestSkipped(ITestResult result) {
